@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include <ncurses.h>
+#include "GUI/AddrBlock.hpp"
 
 using namespace std;
 
