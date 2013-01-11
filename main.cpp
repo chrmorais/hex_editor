@@ -26,10 +26,7 @@ int main( int argc, const char* argv[] ){
   move(2,0);
   printw("%08X",31); // вывод строки
   move(3,0);
-  printw("%08X",47); // вывод строки
-  move(4,0);
-  printw("%08X",63); // вывод строки
-  
+  printw("%08X",47); // вывод строки 
   
   
   //addchnstr("hello",-1);
