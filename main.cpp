@@ -7,6 +7,8 @@
 using namespace std;
 
 int main( int argc, const char* argv[] ){
+
+
   initscr();
 
 
@@ -19,6 +21,11 @@ int main( int argc, const char* argv[] ){
   attron(A_BOLD);
   attron(COLOR_PAIR(1));
   
+  AddrBlock *GUI_Addr = new AddrBlock( 1,1,9,10 );
+
+  move(10,0);
+  printw("%08X",GUI_Addr->getLeft() );
+  delete GUI_Addr;
 
   move(0,0);
   printw("%08X",0); // вывод строки
