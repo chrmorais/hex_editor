@@ -21,21 +21,10 @@ int main( int argc, const char* argv[] ){
   attron(A_BOLD);
   attron(COLOR_PAIR(1));
   
-  AddrBlock *GUI_Addr = new AddrBlock( 1,1,9,10 );
-
-  move(10,0);
-  printw("%08X",GUI_Addr->getLeft() );
-  delete GUI_Addr;
-
-  move(0,0);
-  printw("%08X",0); // вывод строки
-  move(1,0);
-  printw("%08X",15); // вывод строки
-  move(2,0);
-  printw("%08X",31); // вывод строки
-  move(3,0);
-  printw("%08X",47); // вывод строки 
+  AddrBlock *GUI_Addr = new AddrBlock( 0,1,9,maxy-2 );
+  GUI_Addr->Paint();
   
+  delete GUI_Addr;
   
   //addchnstr("hello",-1);
 

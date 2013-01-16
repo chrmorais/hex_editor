@@ -5,7 +5,13 @@ AddrBlock::AddrBlock( int aLeft, int aTop, int aWidth, int aHeight ){
   this->setTop(aTop);
   this->setWidth(aWidth);
   this->setHeight(aHeight);
-}
+
+  this->BeginAddress = 0;
+  this->Step = 4;
+
+  this->Enabled = true;
+
+};
 
 int AddrBlock::getWidth(void){
   return this->Width;
@@ -45,11 +51,51 @@ void AddrBlock::setLeft(int aLeft){
   }
 }
 
-// int AddrBlock::getTop(void);
-// void AddrBlock::setTop(int aTop);
+int AddrBlock::getTop(void){
+  return this->Top;
+}
 
-// void AddrBlock::setEnabled( bool aEnable );
-// bool AddrBlock::getEnabled(void);
+void AddrBlock::setTop(int aTop){
+  if( aTop < 0 ){
+    this->Top = 0;
+  }else{
+    this->Top = aTop;
+  }
+}
 
-// void AddrBlock::setBeginAddress( unsigned int aAddress );
-// unsigned int AddrBlock::getBeginAddress(void);
+void AddrBlock::setEnabled( bool aEnable ){
+  this->Enabled = aEnable;
+}
+
+bool AddrBlock::getEnabled(void){
+  return this->Enabled;
+}
+
+void AddrBlock::setBeginAddress( unsigned int aAddress ){
+  this->BeginAddress = aAddress;
+}
+
+unsigned int AddrBlock::getBeginAddress(void){
+  return this->BeginAddress;
+}
+
+int AddrBlock::getStep(void){
+  return this->Step;
+}
+
+void AddrBlock::setStep( int aStep ){
+  this->Step = aStep;
+}
+
+void AddrBlock::Paint(void) const{
+  if(this->Enabled){    
+
+    unsigned int CurAddress = this->BeginAddress;
+
+    for( int row = 0; row < this->Height; row++ ){
+      move( this->Top + row, this->Left );
+      printw("%08X", CurAddress );
+      CurAddress += this->Step;
+    }
+  }
+}

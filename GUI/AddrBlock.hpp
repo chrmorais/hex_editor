@@ -18,7 +18,7 @@ class AddrBlock{
     void setHeight(int aHeight);
 
     int getLeft(void);
-    void setLeft(int aLeft);
+     void setLeft(int aLeft);
     
     int getTop(void);
     void setTop(int aTop);
@@ -28,6 +28,11 @@ class AddrBlock{
 
     void setBeginAddress( unsigned int aAddress );
     unsigned int getBeginAddress(void);
+    
+    void setStep(int aStep);
+    int getStep(void);
+
+    void Paint(void) const;
   
   private:
     int Left;
@@ -38,4 +43,5 @@ class AddrBlock{
     bool Enabled;
 
     unsigned int BeginAddress;
+    int Step;
 };
