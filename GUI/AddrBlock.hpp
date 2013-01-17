@@ -31,6 +31,15 @@ class AddrBlock{
     
     void setStep(int aStep);
     int getStep(void);
+    
+    void setColor( int aColorPair );
+    int  getColor(void);
+
+    void setSelectColor( int aColorPair );
+    int  getSelectColor(void);
+     
+    void setSelectAddress( int aAddressIndex );
+    int  getSelectAddress(void);
 
     void Paint(void) const;
   
@@ -44,4 +53,8 @@ class AddrBlock{
 
     unsigned int BeginAddress;
     int Step;
+
+    int DefaultColor;
+    int SelectColor;
+    int SelectAddressIndex;
 };
