@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=-lpanel -lncurses
-SOURCES=main.cpp GUI/AddrBlock.cpp ncurses_utils.cpp
+SOURCES=main.cpp GUI/AddrBlock.cpp GUI/ByteGrid.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=main
 

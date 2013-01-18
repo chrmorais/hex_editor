@@ -4,7 +4,7 @@
 #include <ncurses.h>
 
 #include "GUI/AddrBlock.hpp"
-//#include "ncurses_utils.hpp"
+#include "GUI/ByteGrid.hpp"
 
 using namespace std;
 
@@ -36,6 +36,8 @@ int main( int argc, const char* argv[] ){
   attron(COLOR_PAIR(2));
   move(1, 10);
   vline(ACS_VLINE,37);
+
+  ByteGrid *GV = new ByteGrid( 10, 1, 80, maxy-2 );
   //attron(COLOR_PAIR(2));
   //move(15,15);
   //addch(ACS_VLINE);
