@@ -29,17 +29,21 @@ class ByteGrid{
     void setColor( int aColorPair );
     int  getColor(void);
 
-    void setSelectColor( int aColorPair );
-    int  getSelectColor(void);
+    void setCursorColor( int aColorPair );
+    int  getCursorColor(void);
     
     void setColumnSize( int aColumnSize );
     int  getColumnSize(void);
     
-    void setActiveCell( int aPos );
-    int  getActiveCell(void);
+    void setCursorPos( int aPos );
+    int  getCursorPos(void);
     
+
     void setByte(int aPos, char aByte);
     char getByte(int aPos);
+
+    void setByteCount( UINT aCount );
+    UINT getByteCount(void);
     
     void Clear( void );
 
@@ -56,8 +60,8 @@ class ByteGrid{
     int ColSize;
 
     int DefaultColor;
-    int SelectColor;
-    int SelectCellPos;
+    int CursorColor;
+    int CursorPos;
 
     std::vector<char> Data;
 };

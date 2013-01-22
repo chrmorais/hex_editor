@@ -11,13 +11,13 @@ ByteGrid::ByteGrid( int aLeft, int aTop, int aWidth, int aHeight ){
   this->ColSize = 4;
 
   this->DefaultColor = 1;
-  this->SelectColor  = 2;
-  this->SelectCellPos = -1;  
+  this->CursorColor  = 2;
+  this->CursorPos = -1;  
 }
 
 void ByteGrid::Clear(void){
   for( int byteinx=0; byteinx < this->Data.size(); byteinx++ ){
-    this->Data.at(byteinx) = (char)0;
+    this->Data.at(byteinx) = 0;
   }
 }
 
@@ -27,9 +27,7 @@ int ByteGrid::getWidth(void){
 
 void ByteGrid::setWidth(int aWidth){
   if( aWidth >= 0 ){
-    this->Width = aWidth;
-
-
+    this->Width = aWidth;  
   }else{
     this->Width = 0;
   }
@@ -87,12 +85,12 @@ int ByteGrid::getColor(void){
   return this->DefaultColor;
 }
 
-void ByteGrid::setSelectColor( int aColorPair ){
-  this->SelectColor = aColorPair;
+void ByteGrid::setCursorColor( int aColorPair ){
+  this->CursorColor = aColorPair;
 }
 
-int ByteGrid::getSelectColor(void){
-  return this->SelectColor;
+int ByteGrid::getCursorColor(void){
+  return this->CursorColor;
 }
 
 void ByteGrid::setColumnSize( int aColumnSize ){
@@ -115,16 +113,25 @@ char ByteGrid::getByte(int aPos){
   }
 }
 
-void ByteGrid::setActiveCell( int aPos ){  
-  this->SelectCellPos = aPos;
+void ByteGrid::setCursorPos( int aPos ){  
+  this->CursorPos = aPos;
 }
 
-int ByteGrid::getActiveCell(void){
-  return this->SelectCellPos;
+int ByteGrid::getCursorPos(void){
+  return this->CursorPos;
+}
+
+void ByteGrid::setByteCount( UINT aCount ){
+  this->Data.resize(aCount);
+}
+
+UINT ByteGrid::getByteCount(void){
+  return this->Data.size();
 }
 
 void ByteGrid::Paint(void) const{
-  if( this->Enabled ){
+  if( this->Enabled && this->Data.size() != 0 ){
+    
 
   }
 }
