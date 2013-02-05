@@ -5,6 +5,7 @@
 #include <ncurses.h>
 
 typedef unsigned int UINT;
+typedef unsigned char BYTE;
 
 
 class ByteGrid{
@@ -14,6 +15,8 @@ class ByteGrid{
     int getWidth(void);
     void setWidth(int aWidth);
     
+    void setFillWidth( void );
+
     int getHeight(void);
     void setHeight(int aHeight);
 
@@ -37,14 +40,15 @@ class ByteGrid{
     
     void setCursorPos( int aPos );
     int  getCursorPos(void);
-    
-
-    void setByte(int aPos, char aByte);
-    char getByte(int aPos);
+  
+    void setByte(UINT aPos, BYTE aByte);
+    BYTE getByte(UINT aPos);
 
     void setByteCount( UINT aCount );
     UINT getByteCount(void);
     
+    UINT getByteInRow(void);//количество выводимых байт в одной строке
+
     void Clear( void );
 
     void Paint(void) const;
@@ -63,5 +67,5 @@ class ByteGrid{
     int CursorColor;
     int CursorPos;
 
-    std::vector<char> Data;
+    std::vector<BYTE> Data;
 };
