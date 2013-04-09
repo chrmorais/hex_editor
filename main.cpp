@@ -20,7 +20,7 @@ int main( int argc, const char* argv[] ){
   //bkgdset(COLOR_PAIR(1));
   int maxx = getmaxx(stdscr);
   int maxy = getmaxy(stdscr);
-  
+
   init_pair(1, COLOR_YELLOW, COLOR_BLUE);
   init_pair(2, COLOR_WHITE, COLOR_BLUE );
   init_pair(3, COLOR_RED, COLOR_BLUE );
