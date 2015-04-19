@@ -78,7 +78,8 @@ class ByteGrid:
     @cursor_position.setter
     def cursor_position(self, position):
         if(0 <= position[0] < self.row_count and
-           0 <= position[1] < self.col_count):
+           0 <= position[1] < self.col_count and
+           position[0]*self.col_count + position[1] < len(self.data)):
             self.__cursor_position = position
 
     def autosize(self):
