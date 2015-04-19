@@ -46,6 +46,7 @@ class ByteGrid:
         """data - одномерный массив, содержащий байты отображаемых данных"""
         if len(data) <= self.row_count * self.col_count:
             self.__data = data
+            self.cursor_position = (0, 0)
         else:
             raise Exception("Data length more than ByteGrid size")
 
