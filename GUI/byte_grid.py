@@ -1,7 +1,5 @@
 import curses
 
-from ui_utils import Rectangle as Rect
-
 
 class ByteGrid:
     def __init__(self, view_zone):

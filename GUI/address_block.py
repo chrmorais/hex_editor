@@ -1,7 +1,5 @@
 import curses
-import sys
 
-from ui_utils import Rectangle as Rect
 
 class AddressBlock():
     def __init__(self, view_zone):
