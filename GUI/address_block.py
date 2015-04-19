@@ -72,9 +72,7 @@ class AddressBlock():
             if row == self.highlight_inx:
                 context.attrset(curses.color_pair(self.highlight))
 
-            context.addstr(self.draw_zone.top + row,
-                           self.draw_zone.left,
-                           '{:08X}'.format(self.start_address+row*self.step))
+            context.addstr('{:08X}'.format(self.start_address+row*self.step))
 
             if row == self.highlight_inx:
                 context.attrset(curses.color_pair(self.color))
