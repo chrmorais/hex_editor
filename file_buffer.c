@@ -48,11 +48,11 @@ saveChanges(PyObject *self, PyObject *args){
 /* таблица регистрации */
 static PyMethodDef file_buffer_methods[] = {
     {"init", init, METH_VARARGS, ""},
-    {"openFile", getByte, METH_VARARGS, ""},
-    {"closeFile", getByte, METH_VARARGS, ""},
+    {"openFile", openFile, METH_VARARGS, ""},
+    {"closeFile", closeFile, METH_VARARGS, ""},
     {"getByte", getByte, METH_VARARGS, ""},
-    {"setByte", getByte, METH_VARARGS, ""},
-    {"saveChanges", getByte, METH_VARARGS, ""},
+    {"setByte", setByte, METH_VARARGS, ""},
+    {"saveChanges", saveChanges, METH_VARARGS, ""},
 
     {NULL, NULL, 0, NULL}
 };
