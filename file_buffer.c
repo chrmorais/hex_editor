@@ -3,21 +3,66 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static const int CHUNK_SIZE  = 128;
 
-static unsigned char *buffer = NULL;
+int chunk_size  = 128;
+int buffer_size = 128*1024;
+
+unsigned int buffer_offset = 0;
+unsigned char *buffer = NULL;
+
+unsigned int file_size = 0;
+const char *file_path = NULL;
+
+
+unsigned int
+buffering(unsigned int start){
+    if(file_path == NULL){
+        return 0;
+    }
+
+    FILE *user_file = fopen(file_path, "r");
+    fseek(user_file, buffer_offset, SEEK_SET);
+    fgets(buffer, buffer_size, user_file);
+    fclose(user_file);
+
+    buffer_offset = start;
+
+    if(start + buffer_size >= file_size){
+        return file_size - 1;
+    }
+
+    return start + buffer_size;
+}
 
 
 PyObject *
 init(PyObject *self, PyObject *args){
-    buffer = malloc(CHUNK_SIZE * 1024);
+    if(PyArg_Parse(args, "(i)", &chunk_size)){
+        if(chunk_size <= 0 ){
+            chunk_size = 128;
+        };
+
+        buffer_size = chunk_size * 1024;
+    }
+
+    buffer = malloc(buffer_size);
 
     return Py_BuildValue("");
 };
 
 PyObject *
 openFile(PyObject *self, PyObject *args){
-    return Py_BuildValue("");
+    PyArg_Parse(args, "(s)", &file_path);
+
+    //узнаем размер файла
+    FILE *user_file = fopen(file_path, "r");
+    fseek(user_file, 0L, SEEK_END);
+    file_size = ftell(user_file);
+    fclose(user_file);
+
+    buffering(0);
+
+    return Py_BuildValue("i",buffer[7]);
 };
 
 PyObject *
