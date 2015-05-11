@@ -27,9 +27,9 @@ buffering(unsigned int start){
         return 0;
     }
 
-    FILE *user_file = fopen(file_path, "r");
+    FILE *user_file = fopen(file_path, "rb");
     fseek(user_file, buffer_offset, SEEK_SET);
-    fgets(buffer, buffer_size, user_file);
+    fread(buffer, 1, buffer_size, user_file);
     fclose(user_file);
 
     buffer_offset = start;
@@ -84,14 +84,14 @@ open_file(PyObject *self, PyObject *args){
     PyArg_Parse(args, "(s)", &file_path);
 
     //узнаем размер файла
-    FILE *user_file = fopen(file_path, "r");
+    FILE *user_file = fopen(file_path, "rb");
     fseek(user_file, 0L, SEEK_END);
     file_size = ftell(user_file);
     fclose(user_file);
 
     buffering(0);
 
-    return Py_BuildValue("");
+    return Py_BuildValue("i",file_size);
 };
 
 PyObject *
