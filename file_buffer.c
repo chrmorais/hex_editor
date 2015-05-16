@@ -20,6 +20,9 @@ struct chunk {
     unsigned char *data;
 };
 
+struct chunk *chunk_store = NULL;
+unsigned int chunk_store_size = 0;
+
 
 unsigned int
 buffering(unsigned int start){
@@ -60,9 +63,56 @@ calculate_buffer_start(unsigned int address){
     return (unsigned int)start;
 }
 
+struct chunk *
+find_byte_in_chunk(unsigned int address){
+    if(chunk_store == NULL){
+        return NULL;
+    }
+
+    int inx = 0;
+    for (inx=0; inx < chunk_size; inx++) {
+        if(address >= chunk_store[inx].offset &&
+           address < chunk_store[inx].offset + chunk_size ){
+            return &chunk_store[inx];
+        }
+    }
+
+    return NULL;
+}
+
+void
+create_chunk_for_address(unsigned int address){
+
+    if(file_path == NULL){
+        return;
+    }
+
+    unsigned int chunk_offset = address - (address % chunk_size);
+    struct chunk *new_chunk = malloc(sizeof(struct chunk));
+    new_chunk->data = (char *)malloc(chunk_size);
+
+    FILE *user_file = fopen(file_path, "rb");
+    fseek(user_file, chunk_offset, SEEK_SET);
+    fread(new_chunk->data, 1, chunk_size, user_file);
+    fclose(user_file);
+
+    new_chunk->offset = chunk_offset;
+
+    if(chunk_store_size == 0){
+        chunk_store = malloc(sizeof(struct chunk));
+        chunk_store[0] = *new_chunk;
+    }else{
+        chunk_store = realloc(chunk_store, (chunk_store_size+1) * sizeof(struct chunk));
+        chunk_store[chunk_store_size+1] = *new_chunk;
+    }
+
+    chunk_size++;
+}
+
 void
 save_changes(void){
 };
+
 
 PyObject *
 init(PyObject *self, PyObject *args){
@@ -114,6 +164,11 @@ get_byte(PyObject *self, PyObject *args){
         return Py_BuildValue("c", 0);
     }
 
+    struct chunk *chunk_with_address = find_byte_in_chunk(address);
+    if(chunk_with_address != NULL){
+        return Py_BuildValue("c", chunk_with_address->data[address - chunk_with_address->offset]);
+    }
+
     if(!address_in_buffer(address)){
         buffering(address);
     }
@@ -123,6 +178,18 @@ get_byte(PyObject *self, PyObject *args){
 
 PyObject *
 set_byte(PyObject *self, PyObject *args){
+    unsigned int address = 0;
+    unsigned char value;
+
+    PyArg_Parse(args, "(ic)", &address, &value);
+
+    if(find_byte_in_chunk(address) == NULL){
+        create_chunk_for_address(address);
+    }
+
+    struct chunk *find_chunk = find_byte_in_chunk(address);
+    find_chunk->data[address - find_chunk->offset] = value;
+
     return Py_BuildValue("");
 };
 
