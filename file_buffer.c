@@ -70,7 +70,7 @@ find_byte_in_chunk(unsigned int address){
     }
 
     int inx = 0;
-    for (inx=0; inx < chunk_size; inx++) {
+    for (inx=0; inx < chunk_store_size; inx++) {
         if(address >= chunk_store[inx].offset &&
            address < chunk_store[inx].offset + chunk_size ){
             return &chunk_store[inx];
@@ -102,15 +102,62 @@ create_chunk_for_address(unsigned int address){
         chunk_store = malloc(sizeof(struct chunk));
         chunk_store[0] = *new_chunk;
     }else{
-        chunk_store = realloc(chunk_store, (chunk_store_size+1) * sizeof(struct chunk));
-        chunk_store[chunk_store_size+1] = *new_chunk;
+        chunk_store = (struct chunk *)realloc(chunk_store, (chunk_store_size+1) * sizeof(struct chunk));
+        chunk_store[chunk_store_size] = *new_chunk;
     }
 
-    chunk_size++;
+    chunk_store_size++;
+}
+
+unsigned char
+__get_byte(size_t address){
+
+    if(address >= file_size){
+        return (unsigned char)0;
+    }
+
+    struct chunk *chunk_with_address = find_byte_in_chunk(address);
+    if(chunk_with_address != NULL){
+        return chunk_with_address->data[address - chunk_with_address->offset];
+    }
+
+    if(!address_in_buffer(address)){
+        buffering(address);
+    }
+
+    return buffer[address - buffer_offset];
 }
 
 void
 save_changes(void){
+    if(file_path == NULL){
+        return;
+    }
+
+    size_t buffer_copy_size = 4096;
+    unsigned char *buffer_copy = malloc(buffer_copy_size);
+
+    FILE *copy_file = fopen(strcat(file_path, ".copy"), "wb");
+
+    size_t address = 0;
+    size_t pos_in_buffer = 0;
+    while(address != file_size){
+        buffer_copy[pos_in_buffer] = __get_byte(address);
+
+        pos_in_buffer++;
+        address++;
+
+        if (address == file_size){
+            fwrite(buffer_copy, 1, pos_in_buffer, copy_file);
+        }
+
+        if(pos_in_buffer == buffer_copy_size){
+            fwrite(buffer_copy, 1, buffer_copy_size, copy_file);
+            pos_in_buffer = 0;
+        }
+    }
+
+    fclose(copy_file);
 };
 
 
@@ -156,24 +203,11 @@ close_file(PyObject *self, PyObject *args){
 
 PyObject *
 get_byte(PyObject *self, PyObject *args){
-    unsigned int address = 0;
+    size_t address = 0;
 
     PyArg_Parse(args, "(i)", &address);
 
-    if(address >= file_size){
-        return Py_BuildValue("c", 0);
-    }
-
-    struct chunk *chunk_with_address = find_byte_in_chunk(address);
-    if(chunk_with_address != NULL){
-        return Py_BuildValue("c", chunk_with_address->data[address - chunk_with_address->offset]);
-    }
-
-    if(!address_in_buffer(address)){
-        buffering(address);
-    }
-
-    return Py_BuildValue("c", buffer[address - buffer_offset]);
+    return Py_BuildValue("c", __get_byte(address));
 };
 
 PyObject *
