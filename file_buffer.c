@@ -13,6 +13,7 @@ unsigned char *buffer = NULL;
 
 size_t file_size = 0;
 char *file_path = NULL;
+FILE *user_file = NULL;
 
 
 struct chunk {
@@ -30,10 +31,8 @@ buffering(size_t start){
         return 0;
     }
 
-    FILE *user_file = fopen(file_path, "rb");
     fseek(user_file, buffer_offset, SEEK_SET);
     fread(buffer, 1, buffer_size, user_file);
-    fclose(user_file);
 
     buffer_offset = start;
 
@@ -91,10 +90,8 @@ create_chunk_for_address(size_t address){
     struct chunk *new_chunk = malloc(sizeof(struct chunk));
     new_chunk->data = (char *)malloc(chunk_size);
 
-    FILE *user_file = fopen(file_path, "rb");
     fseek(user_file, chunk_offset, SEEK_SET);
     fread(new_chunk->data, 1, chunk_size, user_file);
-    fclose(user_file);
 
     new_chunk->offset = chunk_offset;
 
@@ -182,10 +179,9 @@ open_file(PyObject *self, PyObject *args){
     PyArg_Parse(args, "(s)", &file_path);
 
     //узнаем размер файла
-    FILE *user_file = fopen(file_path, "rb");
+    user_file = fopen(file_path, "rb");
     fseek(user_file, 0L, SEEK_END);
     file_size = ftell(user_file);
-    fclose(user_file);
 
     buffering(0);
 
