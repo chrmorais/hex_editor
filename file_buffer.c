@@ -12,7 +12,7 @@ size_t buffer_offset = 0;
 unsigned char *buffer = NULL;
 
 size_t file_size = 0;
-const char *file_path = NULL;
+char *file_path = NULL;
 
 
 struct chunk {
@@ -137,7 +137,8 @@ save_changes(void){
     size_t buffer_copy_size = 4096;
     unsigned char *buffer_copy = malloc(buffer_copy_size);
 
-    FILE *copy_file = fopen(strcat(file_path, ".copy"), "wb");
+    char *file_path_copy = strdup(file_path);
+    FILE *copy_file = fopen(strcat(file_path_copy, ".copy"), "wb");
 
     size_t address = 0;
     size_t pos_in_buffer = 0;
