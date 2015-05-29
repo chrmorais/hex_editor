@@ -38,7 +38,6 @@ def keyloop(context):
     byte_grid.highlight = 3
     byte_grid.data = bytearray()
     byte_grid.cursor_position = (1, 1)
-    print(byte_grid.cursor_position)
 
     address_block.step = byte_grid.col_count
 

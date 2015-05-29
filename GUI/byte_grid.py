@@ -56,6 +56,9 @@ class ByteGrid:
 
     @row_count.setter
     def row_count(self, row_count):
+        if row_count < 0:
+            return
+
         if row_count <= self.draw_zone.height:
             self.__row_count = row_count
         else:
@@ -67,6 +70,9 @@ class ByteGrid:
 
     @col_count.setter
     def col_count(self, col_count):
+        if col_count < 0:
+            return
+
         if col_count * 3 + 1 <= self.draw_zone.width:
             self.__col_count = col_count
         else:
