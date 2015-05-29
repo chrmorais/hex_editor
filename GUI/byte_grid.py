@@ -8,7 +8,7 @@ class ByteGrid:
         self.highlight = 1
         self.row_count = 0
         self.col_count = 0
-        self.cursor_position = (0, 0)
+        self.__cursor_position = (0, 0)
         self.data = []
 
         self.autosize()
