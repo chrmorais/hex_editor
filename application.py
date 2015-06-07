@@ -1,16 +1,21 @@
 import os.path
-import sys
 import curses
 
 from GUI.address_block import *
 from GUI.byte_grid import *
 from GUI.ui_utils import Rectangle as Rect
 
+from event import Event
+import listeners
 import file_buffer
 
 
 class Application:
     def __init__(self, context, file_path):
+        self.__event_history = []
+        self.__listeners = []
+        listeners.link_listeners(self)
+
         self.__file_size = os.stat(file_path).st_size
 
         file_buffer.init(128)
@@ -23,9 +28,8 @@ class Application:
 
         self.__init_GUI()
 
-
     def __init_GUI(self):
-        self.address_block = AddressBlock(Rect(0,0,8,self.__max_y))
+        self.address_block = AddressBlock(Rect(0, 0, 8, self.__max_y))
         self.address_block.start_address = 0
         self.address_block.color = 2
         self.address_block.highlight = 3
@@ -33,7 +37,8 @@ class Application:
 
         self.byte_grid = ByteGrid(Rect(self.address_block.draw_zone.width + 1,
                                        0,
-                                       self.__max_x - self.address_block.draw_zone.width - 1,
+                                       self.__max_x -
+                                       self.address_block.draw_zone.width - 1,
                                        self.__max_y))
         self.byte_grid.color = 2
         self.byte_grid.highlight = 3
@@ -65,44 +70,35 @@ class Application:
         self.byte_grid.data = bytearray(data)
         self.__context.clear()
 
-        key = ''
-        while key != ord('q'):
+        while True:
 
             self.address_block.draw(self.__context)
             self.byte_grid.draw(self.__context)
             self.__context.refresh()
 
             key = self.__context.getch()
-            if key == curses.KEY_DOWN:
-                self.byte_grid.cursor_position = \
-                    (self.byte_grid.cursor_position[0]+1,
-                     self.byte_grid.cursor_position[1])
-                self.address_block.highlight_inx = \
-                    self.byte_grid.cursor_position[0]
-            if key == curses.KEY_UP:
-                self.byte_grid.cursor_position = \
-                    (self.byte_grid.cursor_position[0]-1,
-                    self.byte_grid.cursor_position[1])
-                self.address_block.highlight_inx = \
-                    self.byte_grid.cursor_position[0]
-            if key == curses.KEY_LEFT:
-                self.byte_grid.cursor_position = \
-                   (self.byte_grid.cursor_position[0],
-                    self.byte_grid.cursor_position[1]-1)
-                self.address_block.highlight_inx = \
-                    self.byte_grid.cursor_position[0]
-            if key == curses.KEY_RIGHT:
-                self.byte_grid.cursor_position = \
-                    (self.byte_grid.cursor_position[0],
-                    self.byte_grid.cursor_position[1]+1)
-                self.address_block.highlight_inx = \
-                    self.byte_grid.cursor_position[0]
+            self.__event_history.append(Event('key_press', {'key': key}))
+            self.__notify()
 
-        self.exit()
+    def attach_listener(self, listener):
+        if listener not in self.__listeners:
+            self.__listeners.append(listener)
+
+    def detach_listener(self, listener):
+        self.__listeners.remove(listener)
+
+    def __notify(self):
+        for listener in self.__listeners:
+            listener.update(self)
 
     def exit(self):
         file_buffer.close_file()
         curses.endwin()
+        exit()
+
+    @property
+    def event_history(self):
+        return self.__event_history
 
     @property
     def address_block(self):
