@@ -30,7 +30,6 @@ class Application:
         self.__init_GUI()
 
     def __init_GUI(self):
-        free_space = 0
         self.address_block = AddressBlock(Rect(0, 0, 8, self.__max_y))
         self.address_block.start_address = 0
         self.address_block.color = 2
