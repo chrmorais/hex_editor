@@ -3,6 +3,7 @@ import curses
 
 from GUI.address_block import *
 from GUI.byte_grid import *
+from GUI.text_view import *
 from GUI.ui_utils import Rectangle as Rect
 
 from event import Event
@@ -29,16 +30,18 @@ class Application:
         self.__init_GUI()
 
     def __init_GUI(self):
+        free_space = 0
         self.address_block = AddressBlock(Rect(0, 0, 8, self.__max_y))
         self.address_block.start_address = 0
         self.address_block.color = 2
         self.address_block.highlight = 3
         self.address_block.highlight_inx = 0
 
-        self.byte_grid = ByteGrid(Rect(self.address_block.draw_zone.width + 1,
+        busy_space = self.address_block.draw_zone.width
+        ratio = (self.__max_x + 1 - busy_space) / 4
+        self.byte_grid = ByteGrid(Rect(busy_space + 1,
                                        0,
-                                       self.__max_x -
-                                       self.address_block.draw_zone.width - 1,
+                                       ratio*3,
                                        self.__max_y))
         self.byte_grid.color = 2
         self.byte_grid.highlight = 3
@@ -46,7 +49,17 @@ class Application:
         self.byte_grid.cursor_position = (1, 1)
         self.byte_grid.autosize()
 
+        busy_space += self.byte_grid.draw_zone.width + 1
+
         self.address_block.step = self.byte_grid.col_count
+
+        self.text_view = TextView(Rect(busy_space,
+                                       0,
+                                       self.byte_grid.col_count,
+                                       self.__max_y))
+        self.text_view.symbol_in_row = self.byte_grid.col_count
+        self.text_view.color = 2
+        self.text_view.highlight_color = 3
 
     def __init_context(self, context):
 
@@ -68,12 +81,14 @@ class Application:
             data.append(ord(file_buffer.get_byte(i)))
 
         self.byte_grid.data = bytearray(data)
+        self.text_view.data = bytearray(data)
         self.__context.clear()
 
         while True:
 
             self.address_block.draw(self.__context)
             self.byte_grid.draw(self.__context)
+            self.text_view.draw(self.__context)
             self.__context.refresh()
 
             key = self.__context.getch()

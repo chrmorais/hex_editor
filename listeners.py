@@ -41,7 +41,9 @@ class MoveByteGridCursorListiner(Listener):
                                          old_cursor[1]+delta_col)
 
         app.address_block.highlight_inx = app.byte_grid.cursor_position[0]
-
+        app.text_view.highlight_index = (app.byte_grid.cursor_position[0] *
+                                         app.text_view.symbol_in_row +
+                                         app.byte_grid.cursor_position[1])
 
 def link_listeners(app):
     app.attach_listener(ExitListiner())
