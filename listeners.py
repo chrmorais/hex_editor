@@ -45,6 +45,16 @@ class MoveByteGridCursorListiner(Listener):
                                          app.text_view.symbol_in_row +
                                          app.byte_grid.cursor_position[1])
 
+class GoToListener(Listener):
+    def update(self,app):
+        last_event = app.event_history[-1]
+
+        if last_event.type != 'go_to':
+            return
+
+        app.go_to(last_event.data['offset'])
+
 def link_listeners(app):
     app.attach_listener(ExitListiner())
     app.attach_listener(MoveByteGridCursorListiner())
+    app.attach_listener(GoToListener())

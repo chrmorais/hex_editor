@@ -13,6 +13,8 @@ import file_buffer
 
 class Application:
     def __init__(self, context, file_path):
+        self.__offset_in_file = 0
+
         self.__event_history = []
         self.__listeners = []
         listeners.link_listeners(self)
@@ -28,6 +30,8 @@ class Application:
         self.__max_y, self.__max_x = self.__context.getmaxyx()
 
         self.__init_GUI()
+
+        self.go_to(0)
 
     def __init_GUI(self):
         self.address_block = AddressBlock(Rect(0, 0, 8, self.__max_y))
@@ -70,17 +74,6 @@ class Application:
         context.bkgdset(curses.color_pair(2))
 
     def keyloop(self):
-
-        data = []
-        data_size = self.byte_grid.col_count * self.byte_grid.row_count
-        if data_size > self.__file_size:
-            data_size = self.__file_size
-
-        for i in range(data_size):
-            data.append(ord(file_buffer.get_byte(i)))
-
-        self.byte_grid.data = bytearray(data)
-        self.text_view.data = bytearray(data)
         self.__context.clear()
 
         while True:
@@ -129,3 +122,18 @@ class Application:
     @byte_grid.setter
     def byte_grid(self, widget):
         self.__byte_grid = widget
+
+    def go_to(self, offset):
+        "Позволяет перейти к произвольному байту в файле"
+        if offset >= self.__file_size:
+            return
+
+        self.__offset_in_file = offset
+        data = []
+        for byte_offset in range(self.__file_size - offset):
+            data.append(ord(file_buffer.get_byte(offset + byte_offset)))
+
+        data = bytearray(data)
+        self.byte_grid.data = data
+        self.text_view.data = data
+        self.address_block.start_address = offset
