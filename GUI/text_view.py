@@ -10,6 +10,10 @@ class TextView:
         self.invisible_symbol = ord('.')
         self.data = []
 
+    # Проверяет может ли быть отображен символ в ascii кодировке
+    def __is_visual(self, symbol):
+        return 33 < symbol < 127
+
     @property
     def draw_zone(self):
         return self.__draw_zone
@@ -33,7 +37,7 @@ class TextView:
     @invisible_symbol.setter
     def invisible_symbol(self, symbol):
         #символ должен быть визуальным
-        if 33 < symbol < 255:
+        if self.__is_visual(symbol):
             self.__invisible_symbol = symbol
 
     @property
@@ -87,10 +91,10 @@ class TextView:
                     context.attrset(curses.color_pair(self.highlight_color))
 
                 if sym_inx < len(self.data):
-                    if 33 < self.data[sym_inx] < 255:
-                        context.addstr(chr(self.__data[sym_inx]))
+                    if self.__is_visual(self.data[sym_inx]):
+                        context.addch(chr(self.__data[sym_inx]))
                     else:
-                        context.addstr(chr(self.invisible_symbol))
+                        context.addch(chr(self.invisible_symbol))
 
                 if self.highlight_index == sym_inx:
                     context.attrset(curses.color_pair(self.color))

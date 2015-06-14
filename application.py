@@ -34,7 +34,7 @@ class Application:
         self.go_to(0)
 
     def __init_GUI(self):
-        self.address_block = AddressBlock(Rect(0, 1, 8, self.__max_y-1))
+        self.address_block = AddressBlock(Rect(0, 1, 8, self.__max_y-2))
         self.address_block.start_address = 0
         self.address_block.color = 2
         self.address_block.highlight = 3
@@ -45,7 +45,7 @@ class Application:
         self.byte_grid = ByteGrid(Rect(busy_space + 1,
                                        1,
                                        ratio*3,
-                                       self.__max_y-1))
+                                       self.__max_y-2))
         self.byte_grid.color = 2
         self.byte_grid.highlight = 3
         self.byte_grid.data = bytearray()
@@ -59,7 +59,7 @@ class Application:
         self.text_view = TextView(Rect(busy_space,
                                        1,
                                        self.byte_grid.col_count,
-                                       self.__max_y-1))
+                                       self.__max_y-2))
         self.text_view.symbol_in_row = self.byte_grid.col_count
         self.text_view.color = 2
         self.text_view.highlight_color = 3
@@ -139,12 +139,23 @@ class Application:
         if offset >= self.__file_size:
             return
 
+        if offset < 0:
+            offset = 0
+
         self.__offset_in_file = offset
+        data_size = self.byte_grid.data_size()
+        if offset + data_size > self.__file_size:
+            data_size = self.__file_size - offset
+
         data = []
-        for byte_offset in range(self.__file_size - offset):
+        for byte_offset in range(data_size):
             data.append(ord(file_buffer.get_byte(offset + byte_offset)))
 
         data = bytearray(data)
         self.byte_grid.data = data
+        self.byte_grid.cursor_position = (0, 0)
         self.text_view.data = data
+        self.text_view.highlight_index = 0
         self.address_block.start_address = offset
+        self.address_block.highlight_inx = 0
+        self.status_line.offset = offset

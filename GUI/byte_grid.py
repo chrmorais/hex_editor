@@ -89,6 +89,9 @@ class ByteGrid:
            position[0]*self.col_count + position[1] < len(self.data)):
             self.__cursor_position = position
 
+    def data_size(self):
+        return self.row_count * self.col_count
+
     def autosize(self):
         """Устанавливает максимально возможные значения кол-ва
            строк и столбцов, основываясь на размерах виджета"""

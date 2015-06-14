@@ -60,7 +60,22 @@ class GoToListener(Listener):
 
         app.go_to(last_event.data['offset'])
 
+class PaginationListener:
+    def update(self,app):
+        last_event = app.event_history[-1]
+
+        if last_event.type != 'key_press':
+            return
+
+        page_size = app.byte_grid.row_count * app.byte_grid.col_count
+        key = last_event.data['key']
+        if key == curses.KEY_NPAGE:
+            app.go_to(app.offset_in_file + page_size)
+        elif key == curses.KEY_PPAGE:
+            app.go_to(app.offset_in_file - page_size)
+
 def link_listeners(app):
     app.attach_listener(ExitListiner())
     app.attach_listener(MoveByteGridCursorListiner())
     app.attach_listener(GoToListener())
+    app.attach_listener(PaginationListener())
