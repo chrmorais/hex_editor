@@ -40,10 +40,16 @@ class MoveByteGridCursorListiner(Listener):
         app.byte_grid.cursor_position = (old_cursor[0]+delta_row,
                                          old_cursor[1]+delta_col)
 
-        app.address_block.highlight_inx = app.byte_grid.cursor_position[0]
-        app.text_view.highlight_index = (app.byte_grid.cursor_position[0] *
+        new_cursor = app.byte_grid.cursor_position
+
+        app.address_block.highlight_inx = new_cursor[0]
+        app.text_view.highlight_index = (new_cursor[0] *
                                          app.text_view.symbol_in_row +
-                                         app.byte_grid.cursor_position[1])
+                                         new_cursor[1])
+
+        app.status_line.offset = (app.offset_in_file +
+                            new_cursor[0] * app.byte_grid.col_count +
+                            new_cursor[1])
 
 class GoToListener(Listener):
     def update(self,app):
