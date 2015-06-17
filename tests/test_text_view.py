@@ -14,6 +14,13 @@ class TestTextView(unittest.TestCase):
 
         self.assertTrue(self.model.invisible_symbol != 0)
 
+    def test_set_data_size_more_than_allow(self):
+        data = bytearray(range(self.model.symbol_in_row *
+                               self.model.draw_zone.height + 1))
+
+        with self.assertRaises(Exception):
+            self.model.data = data
+
     def test_set_symbol_in_row_more_than_width(self):
         self.model.symbol_in_row = -1
         self.model.symbol_in_row = self.model.draw_zone.width + 1

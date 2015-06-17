@@ -84,6 +84,11 @@ class TextView:
 
                 sym_inx = row * self.symbol_in_row + col
 
+                if not(0 <= self.data[sym_inx] <= 256):
+                    raise Exception("%s in not ascii symbol" %
+                                    self.data[sym_inx])
+
+
                 if self.highlight_index == sym_inx:
                     context.attrset(curses.color_pair(self.highlight_color))
 

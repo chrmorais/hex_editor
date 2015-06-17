@@ -15,6 +15,20 @@ class TestByteGrid(unittest.TestCase):
         self.assertTrue(self.model.row_count != -1)
         self.assertTrue(self.model.col_count != -1)
 
+    def test_large_data_size(self):
+        data = bytearray(range(self.model.row_count *
+                               self.model.col_count + 1))
+
+        with self.assertRaises(Exception):
+            self.model.data = data
+
+    def test_row_and_columns_larger_than_allowed(self):
+        with self.assertRaises(Exception):
+            self.model.row_count = self.model.draw_zone.height + 1
+
+        with self.assertRaises(Exception):
+            self.model.col_count = self.model.draw_zone.width + 1
+
     def test_autosize(self):
         self.model.row_count = 0
         self.model.col_count = 0

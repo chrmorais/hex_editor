@@ -108,6 +108,10 @@ class ByteGrid:
                 context.move(self.draw_zone.top + (row),
                              self.draw_zone.left + (col*3))
 
+                if not(0 <= self.__data[row*self.col_count+col] <= 256):
+                    raise Exception("%s in not ascii symbol" %
+                                    self.__data[row*self.col_count+col])
+
                 if(row == self.__cursor_position[0] and
                    col == self.__cursor_position[1]):
                     context.attrset(curses.color_pair(self.highlight))
