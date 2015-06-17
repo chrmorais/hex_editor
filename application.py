@@ -67,6 +67,7 @@ class Application:
         self.status_line = StatusLine(Rect(0, 0, self.__max_x+1, 1))
         self.status_line.file_name = os.path.basename(self.__file_path)
         self.status_line.offset = self.__offset_in_file
+        self.status_line.file_size = self.__file_size
         self.status_line.color = 4
 
     def __init_context(self, context):
