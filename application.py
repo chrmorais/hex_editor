@@ -1,5 +1,6 @@
 import os.path
 import curses
+import logging
 
 from GUI.address_block import *
 from GUI.byte_grid import *
@@ -14,6 +15,14 @@ import file_buffer
 
 class Application:
     def __init__(self, context, file_path):
+        self.__logger = logging.getLogger('hex editor')
+        self.__logger.setLevel(logging.DEBUG)
+        log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_log = logging.FileHandler('./debug.log')
+        file_log.setLevel(logging.DEBUG)
+        file_log.setFormatter(log_format)
+        self.__logger.addHandler(file_log)
+
         self.__file_path = file_path
         self.__offset_in_file = 0
         self.__file_size = os.stat(file_path).st_size
@@ -24,10 +33,15 @@ class Application:
 
         file_buffer.init(128)
         file_buffer.open_file(file_path)
+        self.__logger.debug("Открыт файл: {0}".format(
+                            os.path.abspath(file_path)))
+        self.__logger.debug("Размер файла: {0} байт".format(self.__file_size))
 
         self.__context = context
         self.__init_context(self.__context)
         self.__max_y, self.__max_x = self.__context.getmaxyx()
+        self.__logger.debug("Размер экрана: {0}x{1}".format(self.__max_x,
+                                                            self.__max_y))
 
         self.__init_GUI()
 
@@ -108,8 +122,14 @@ class Application:
 
     def exit(self):
         file_buffer.close_file()
+        self.__logger.debug("Файл {0} закрыт".format(
+                            os.path.abspath(file_path)))
         curses.endwin()
         exit()
+
+    @property
+    def logger(self):
+        return self.__logger
 
     @property
     def event_history(self):
@@ -160,3 +180,5 @@ class Application:
         self.address_block.start_address = offset
         self.address_block.highlight_inx = 0
         self.status_line.offset = offset
+
+        self.__logger.debug('Переход к байту: {0}'.format(offset))
